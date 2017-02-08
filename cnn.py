@@ -22,7 +22,8 @@ for file in list :
 	img=Image.open(file)
 	arr=array(img)
 	if arr.shape[0]==120:
-		input.append(arr)
+		flat=arr.flatten()
+		input.append(flat)
 		if "cat" in file:
 			output.append(y_cat)
 		elif "dog" in file:
@@ -30,6 +31,9 @@ for file in list :
 
 input=np.array(input)
 input.astype('float32')
+
+input=(input-np.mean(input,axis=0))/np.std(input,axis=0)
+
 output=np.asarray(output)
 print(input.shape)
 print(output.shape)
@@ -59,7 +63,7 @@ def flatten_layer(conv_layer):
 	return layer_flat
 
 #fully connected layer
-def fc_layer(inpu,num_inputs,num_outputs,use_relu=True):
+def fc_layer(input,num_inputs,num_outputs,use_relu=True):
 	weights=Weight(shape=[num_inputs,num_outputs])
 	biases=bias(length=num_outputs)
 	layer=tf.matmul(input,weights)+biases
@@ -68,25 +72,39 @@ def fc_layer(inpu,num_inputs,num_outputs,use_relu=True):
 	return layer
 
 #placeholders
-X=tf.placeholder(tf.float32,shape=[-1,img_size,img_size,num_channels])
+X=tf.placeholder(tf.float32,shape=[-1,120,120,1])
 Yreal=tf.placeholder(tf.float32,shape=[None,2])
 
+def Yth(input):
+	X=tf.reshape(input,shape=[-1,120,120,1])
+	Y1=convolutional_layer(X,1,5,16,True)
+	Y2=convolutional_layer(Y1,1,5,36,True)
+	Yflatten=flatten_layer(Y2)
+	Yfc=fc_layer(Yflatten,Y2.shape,2,True)
+	Yth=tf.softmax(Yfc)
+	return Yth
+
 #cost function and gradient descent
+Yth=Yth(X)
+learning_rate=0.05
 cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=Yth, labels=Yreal))
 train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
 
 #---------------------------------------------------------------------------------------------------------------------
-#convolutional Layer 1
-filter_size1=5
-num_filters1=16
-#convolutional Layer 2
-filter_size2=5
-num_filters2=36
-
-#fully connected layer
-fc_size=124
 
 #training session
+sess=tf.Session()
+init=tf.global_variables_initializer()
+sess.run(init)
+
+for epoch in range(0,10000):
+	permutation=np.random.permutation(19600)
+	permutation=permutation[0:100]
+	batch=[input[permutation],output[permutation]]
+	training,loss_val=sess.run([train_step,cross_entropy],feed_dict={X:batch[0],Yreal:batch[1]})
+	print("epoch" ,epoch ,"is being processed")
+	print(loss_val,W[1].eval(session=sess))
+
 
 #performance measurement
 correct_prediction = tf.equal(tf.argmax(Yth,1), tf.argmax(Yreal,1))
