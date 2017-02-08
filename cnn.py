@@ -135,6 +135,9 @@ cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=la
 train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
 
 #---------------------------------------------------------------------------------------------------------------------
+#performance measurement
+correct_prediction = tf.equal(Yth_cls, Yreal_cls)
+accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 #training session
 sess=tf.Session()
@@ -149,9 +152,5 @@ for epoch in range(0,10):
 	print("epoch" ,epoch ,"is being processed")
 	print(loss_val)
 
-
-#performance measurement
-correct_prediction = tf.equal(tf.argmax(Yth,1), tf.argmax(Yreal,1))
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 print(sess.run(accuracy, feed_dict={X: test_set, Yreal: test_label}))
 sess.close()
