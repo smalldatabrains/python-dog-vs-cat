@@ -55,9 +55,9 @@ num_channels=1
 num_classes=2
 
 filter_size1 = 5   
-num_filters1 = 16        
+num_filters1 = 4        
 filter_size2 = 5      
-num_filters2 = 36 
+num_filters2 = 10
 fc_size = 128       
 
 #Initialization of Weights and biases
@@ -66,12 +66,12 @@ def Weight(shape):
 def bias(length):
 	return tf.Variable(tf.constant(0.1,shape=[length]))
 
-#convolutional layer creation
+#convolutional layer
 def convolutional_layer(input,num_input_channels,filter_size,num_filters,use_pooling=True):
 	shape=[filter_size,filter_size,num_input_channels,num_filters]
 	weights=Weight(shape=shape)
 	biases=bias(length=num_filters)
-	layer=tf.nn.conv2d(input=input,filter=weights,strides=[1,1,1,1],padding='SAME')+biases
+	layer=tf.nn.conv2d(input=input,filter=weights,strides=[1,2,2,1],padding='SAME')+biases
 	if use_pooling:
 		layer=tf.nn.max_pool(value=layer,ksize=[1,2,2,1],strides=[1,2,2,1],padding='SAME')
 	layer = tf.nn.relu(layer)
@@ -130,7 +130,7 @@ Yth = tf.nn.softmax(layer_fc2)
 Yth_cls = tf.argmax(Yth, dimension=1)
 
 #cost function and gradient descent
-learning_rate=0.003
+learning_rate=0.05
 cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=layer_fc2, labels=Yreal))
 train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
 
@@ -144,13 +144,14 @@ sess=tf.Session()
 init=tf.global_variables_initializer()
 sess.run(init)
 
-for epoch in range(0,10):
+for epoch in range(0,15000):
 	permutation=np.random.permutation(19600)
-	permutation=permutation[0:100]
+	permutation=permutation[0:50]
 	batch=[train_set[permutation],train_label[permutation]]
 	training,loss_val=sess.run([train_step,cross_entropy],feed_dict={X:batch[0],Yreal:batch[1]})
 	print("epoch" ,epoch ,"is being processed")
 	print(loss_val)
 
+print(sess.run(accuracy, feed_dict={X: train_set, Yreal: train_label}))
 print(sess.run(accuracy, feed_dict={X: test_set, Yreal: test_label}))
 sess.close()
