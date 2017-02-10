@@ -6,7 +6,7 @@ from numpy import array
 from PIL import Image
 
 #network parameters
-learning_rate=0.08
+learning_rate=0.07
 
 #layers parameters
 img_size=120
@@ -23,7 +23,7 @@ def new_conv_layer(input,num_input_channels,filter_size,num_output_channels,use_
 	shape=[filter_size,filter_size,num_input_channels,num_output_channels]
 	weights=create_weights(shape=shape)
 	bias=create_bias(length=num_output_channels)
-	layer=tf.nn.conv2d(input=input,filter=weights,strides=[1,1,1,1],padding='SAME')+bias
+	layer=tf.nn.conv2d(input=input,filter=weights,strides=[1,2,2,1],padding='SAME')+bias
 	if use_pool:
 		layer=tf.nn.max_pool(layer,ksize=[1,4,4,1],strides=[1,2,2,1],padding='SAME')
 	return layer,weights
@@ -66,6 +66,14 @@ Yreal=tf.placeholder(dtype=tf.int32,shape=[None,2],name="Yreal")
 cross_entropy=tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=Yth,labels=Yreal))
 tf.summary.scalar('cross entropy',cross_entropy) #for tensorboard
 train_step=tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
+
+#performance of the network-------------------------------------------------------------------------
+correct_prediction_train=tf.equal(classes,tf.argmax(Yreal,dimension=1))
+accuracy_train=tf.reduce_mean(tf.cast(correct_prediction_train,tf.float32))
+tf.summary.scalar('Train accuracy',accuracy_train)
+
+#save the model-------------------------------------------------------------------------------------
+saver=tf.train.Saver()
 
 #Preparing training and testing set-----------------------------------------------------------------
 train="C:\\Users\\Nicolas\\Google Drive\\website\\python-tensorflow\\greytrain" #folder with my 120x120 images
@@ -114,3 +122,5 @@ with tf.Session() as sess:
 		writer.add_summary(summary,epoch)
 		print(cost)
 	print('Training finished.')
+	saver.save(sess,'DogCatModel')
+	print('Model Saved')
