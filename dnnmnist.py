@@ -90,7 +90,7 @@ init=tf.global_variables_initializer()
 
 #--------------------------------------------------------------------------------------------------
 
-dogdir="C:\\Users\\Nicolas\\Google Drive\\website\\python-tensorflow"
+dogdir="/"
 os.chdir(dogdir)
 
 writer=tf.summary.FileWriter("logs/",sess.graph)

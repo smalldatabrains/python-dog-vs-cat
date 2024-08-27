@@ -9,7 +9,7 @@ import math
 from PIL import Image
 
 #folder of images
-train="C:\\Users\\Nicolas\\Google Drive\\website\\python-tensorflow\\greytrain"
+train="img/greytrain/"
 os.chdir(train)
 list=os.listdir()
 input=[]

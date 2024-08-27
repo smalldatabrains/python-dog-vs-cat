@@ -13,7 +13,7 @@ def togrey(list):
 	for file in list:
 		img=Image.open(file)
 		img=img.convert('L')
-		img.save('C:/Users/Nicolas/Google Drive/website/python-tensorflow/greytrain/'+file,"JPEG")
+		img.save('img/greytrain/'+file,"JPEG")
 
 #set same luminance on images
 
@@ -29,7 +29,7 @@ def tothumb(list):
 	for file in list:
 		img=Image.open(file)
 		img.thumbnail([120,120],Image.ANTIALIAS)
-		img.save('C:/Users/Nicolas/Google Drive/website/python-tensorflow/thumbtrain/' + file,"JPEG")
+		img.save('img/thumbtrain/' + file,"JPEG")
 
 def tocrop(list):
         dim=[]
@@ -37,24 +37,19 @@ def tocrop(list):
                 img=Image.open(file)
                 min=np.min(img.size)
                 img=ImageOps.fit(img,(min,min),Image.ANTIALIAS)
-                img.save('C:/Users/Nicolas/Google Drive/website/python-tensorflow/croptrain/' + file,"JPEG")
-
-#it is better to thumb first and then crop (less loss of data)
-# data="C:\\Users\\Nicolas\\Google Drive\\website\\python-tensorflow\\data"
-# os.chdir(data)
-# list=os.listdir()
-# list.sort          
+                img.save('img/croptrain/' + file,"JPEG")
+      
 	
 # tocrop(list)
 
-data="C:\\Users\\Nicolas\\Google Drive\\website\\python-tensorflow\\croptrain"
+data="img/croptrain/"
 os.chdir(data)
 list=os.listdir()
 list.sort
 
 tothumb(list)
 
-data="C:\\Users\\Nicolas\\Google Drive\\website\\python-tensorflow\\thumbtrain"
+data="img/thumbtrain/"
 os.chdir(data)
 list=os.listdir()
 list.sort

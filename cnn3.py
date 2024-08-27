@@ -114,7 +114,7 @@ tf.summary.scalar('accuracy',accuracy)
 saver=tf.train.Saver()
 
 #Preparing training and testing set-----------------------------------------------------------------
-train="C:\\Users\\Nicolas\\Google Drive\\website\\python-tensorflow\\greytrain" #folder with my 120x120 images
+train="img/greytrain/" #folder with my 120x120 images
 os.chdir(train)
 list=os.listdir()
 input=[]
@@ -149,8 +149,8 @@ test_label=output[int(0.8*output.shape[0])+1:output.shape[0]]
 #session launch-------------------------------------------------------------------------------------
 with tf.Session() as sess:
 	merged=tf.summary.merge_all()
-	train_writer=tf.summary.FileWriter('C:/Users/Nicolas/Google Drive/website/python-tensorflow/src/graph/train',sess.graph)
-	test_writer=tf.summary.FileWriter('C:/Users/Nicolas/Google Drive/website/python-tensorflow/src/graph/test')
+	train_writer=tf.summary.FileWriter('src/graph/train/',sess.graph)
+	test_writer=tf.summary.FileWriter('src/graph/test/')
 	sess.run(tf.global_variables_initializer())
 	print('Training started...')
 	for epoch in range(10000):
@@ -169,10 +169,10 @@ with tf.Session() as sess:
 	print_conv_weights(conv_weights1)
 	for image in range(10):
 		print_conv_layer(conv_layer1,[test_set[image,:]])
-	saver.save(sess,"C://Users//Nicolas//Google Drive//website//python-tensorflow//src//dogcatmodeldrop")
+	saver.save(sess,"src/dogcatmodeldrop/")
 	print('Model Saved')
 
-	testfolder="C:\\Users\\Nicolas\\Google Drive\\website\\python-tensorflow\\imtest" #folder with my 120x120 images
+	testfolder="img/imtest/" #folder with my 120x120 images
 	os.chdir(testfolder)
 	list=os.listdir()
 	test=[]

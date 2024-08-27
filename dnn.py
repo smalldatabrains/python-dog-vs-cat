@@ -10,7 +10,7 @@ from PIL import Image
 
 #import images and flatten it into a array (examples x flatten_pixels)
 
-train="C:\\Users\\Nicolas\\Google Drive\\website\\python-tensorflow\\greytrain"
+train="img/greytrain/"
 os.chdir(train)
 list=os.listdir()
 input=[]
@@ -114,7 +114,7 @@ init=tf.global_variables_initializer()
 
 #--------------------------------------------------------------------------------------------------
 #buidling the logs of the graph for visualization in tensorboard
-dogdir="C:\\Users\\Nicolas\\Google Drive\\website\\python-tensorflow"
+dogdir="/"
 os.chdir(dogdir)
 
 #--------------------------------------------------------------------------------------------------

@@ -76,7 +76,7 @@ tf.summary.scalar('Train accuracy',accuracy_train)
 saver=tf.train.Saver()
 
 #Preparing training and testing set-----------------------------------------------------------------
-train="C:\\Users\\Nicolas\\Google Drive\\website\\python-tensorflow\\greytrain" #folder with my 120x120 images
+train="img/greytrain" #folder with my 120x120 images
 os.chdir(train)
 list=os.listdir()
 input=[]
@@ -111,7 +111,7 @@ test_label=output[int(0.8*output.shape[0])+1:output.shape[0]]
 #session launch-------------------------------------------------------------------------------------
 with tf.Session() as sess:
 	merged=tf.summary.merge_all()
-	writer=tf.train.SummaryWriter('C:/Users/Nicolas/Google Drive/website/python-tensorflow/src/graph',sess.graph)
+	writer=tf.train.SummaryWriter('src/graph/',sess.graph)
 	sess.run(tf.global_variables_initializer())
 	print('Training started...')
 	for epoch in range(15000):
